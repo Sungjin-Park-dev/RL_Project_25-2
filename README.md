@@ -29,7 +29,7 @@
 ## 📖 프로젝트 개요
 
 - **환경**: 90m × 90m 실내 환경, 제한된 시야각(FOV 120°, 센서 범위 10m)
-- **목표**: 여러 대의 로봇이 미지의 환경을 **가장 짧은 궤적**으로 탐사하여 **99% coverage** 달성
+- **목표**: 여러 대의 로봇이 미지의 환경을 **가장 짧은 궤적**으로 탐사하여 **90% coverage** 달성
 - **알고리즘**: SAC 기반 Multi-Agent RL + Trajectory Observation
 - **비교대상**: 완전한 통신(Perfect Communication)을 가정한 기존 연구 MARVEL 개선 (https://github.com/marmotlab/MARVEL)
 ---
@@ -88,4 +88,4 @@ model/test_2/checkpoint.pth
 ---
 
 ## 📄 참고 자료
-📎 [프로젝트 발표자료](docs/강화학습개론_RL_project_7조_Explorer.pptx)
+📎 [프로젝트 보고서](docs/강화학습개론_RL_project_7조_Explorer.pptx)
