@@ -1,62 +1,83 @@
-# Multi-Agent Reinforcement Learning for Communication-Free Exploration via Inter-Agent Trajectory Observation
+# 🤖 MARVEL: Multi-Agent Reinforcement Learning for Communication-Free Exploration
 
-## Original Version (w communication)
-<div>
-  <img src="docs/marvel_w_communication.gif">
-<div>
+## ✨ Our Proposed Method
+### 🎬 데모 영상
+6대의 로봇이 **통신 없이** 서로의 궤적만 관찰하여 협력 탐사를 수행하는 모습
 
-## Our proposed method (w/o communication)
-<div>
-   <img src="docs/marvel_wo_communication.gif"/>
+<div align="center">
+  <img src="docs/marvel_wo_communication.gif" width="600"/>
 </div>
 
-## 프로젝트 개요
-- 주제: Multi-Agent Reinforcement Learning for constrained Field-of-View multi robot Exploration in Large-scale environments
-- 목표: 여러 대의 로봇이 미지의 실내 환경을 가장 짧은 궤적으로 탐사해서 100%의 coverage를 100%로 달성하는 것
-- Our method: 기본 방법에서 통신 없이도 다른 로봇이 어디서 왔는지 & 어디로 향하는 지를 보고, 중복 탐사를 피하고 암묵적으로 효울적인 action을 스스로 학습
+### 🔍 문제 정의
+기존 방법들은 **완전한 통신(Perfect Communication)**을 전제로 하지만, 실제 환경에서는 통신 인프라 부족이나 무선 환경 불안정으로 현실적이지 않습니다.
 
-## 환경 세팅 (Setup)
+<div align="center">
+  <img src="docs/CFMRE_figure.png" width="700"/>
+  <p><i>통신이 끊겼을 때, 다른 로봇의 이동 궤적만 보고도 효율적인 탐사가 가능할까?</i></p>
+</div>
+
+### 🧠 핵심 아이디어
+시야(FoV) 안으로 들어온 다른 로봇들의 **최근 궤적(위치, 속도, 방향)**을 Transformer 기반 encoder로 인코딩하여, 통신 없이도 **어디서 왔는지 & 어디로 향하는지**를 파악하고 중복 탐사를 회피합니다.
+
+<div align="center">
+  <img src="docs/pipeline.png" width="800"/>
+  <p><i>Trajectory Encoder → Graph Fusion → Policy Network 파이프라인</i></p>
+</div>
+
+---
+
+## 📖 프로젝트 개요
+
+- **환경**: 90m × 90m 실내 환경, 제한된 시야각(FOV 120°, 센서 범위 10m)
+- **목표**: 여러 대의 로봇이 미지의 환경을 **가장 짧은 궤적**으로 탐사하여 **99% coverage** 달성
+- **알고리즘**: SAC 기반 Multi-Agent RL + Trajectory Observation
+- **비교대상**: Perfect Communication을 가정한 기존 연구 MARVEL 개선 (https://github.com/marmotlab/MARVEL)
+---
+
+## 🛠️ 환경 세팅 (Setup)
 ```bash
 conda env create -f marvel.yml
 conda activate marvel
 ```
-Tested environment: ubuntu 22.04, cuda 12.4
+> **Tested Environment**: Ubuntu 22.04, CUDA 12.4
 
-## 학습 (Training)
+---
+
+## 🚀 학습 (Training)
 ```bash
 python driver.py
 ```
-- 학습 설정은 `parameter.py`에서 변경
-- 체크포인트 저장 위치: `model/<FOLDER_NAME>/checkpoint.pth`
-- TensorBoard 로그: `train/<FOLDER_NAME>/`
+- ⚙️ **학습 설정**: `parameter.py`에서 변경
+- 💾 **체크포인트**: `model/<FOLDER_NAME>/checkpoint.pth`
+- 📈 **TensorBoard 로그**: `train/<FOLDER_NAME>/`
 
-## 평가 (Evaluation)
+---
+
+## 🧪 평가 (Evaluation)
 ```bash
 python test_driver.py
 ```
-- 평가 설정은 `test_parameter.py`에서 변경
-- 결과: 콘솔 메트릭 + `record.txt`, GIF 저장 위치: `results/gifs/<LOAD_FOLDER_NAME>/`
+- ⚙️ **평가 설정**: `test_parameter.py`에서 변경
+- 📊 **결과**: 콘솔 메트릭 + `record.txt`
+- 🎬 **GIF 저장**: `results/gifs/<LOAD_FOLDER_NAME>/`
 
-## Parameter 설정
+---
 
-### parameter.py (학습용)
-- `N_AGENTS`: 에이전트 수 (기본값: 4)
-- `FOV`: 시야각 (기본값: 120°)
-- `SENSOR_RANGE`: 센서 범위 (기본값: 10m)
-- `EMBEDDING_DIM`: 임베딩 차원 (기본값: 128)
-- `LR`: 학습률 (기본값: 1e-5)
-- `BATCH_SIZE`: 배치 크기 (기본값: 256)
-- `REPLAY_SIZE`: 리플레이 버퍼 크기 (기본값: 10000)
-- `GAMMA`: 할인 계수 (기본값: 1)
-- `MINIMUM_BUFFER_SIZE`: 학습 시작 최소 버퍼 크기 (기본값: 2000)
-- `USE_GPU_GLOBAL`: 메인 프로세스 GPU 사용 여부 (기본값: True)
-- `USE_GPU`: 워커 GPU 사용 여부 (기본값: False)
+---
 
-### test_parameter.py (평가용)
-- `load_path`: 체크포인트 경로 (예: `model/test_2/checkpoint.pth`)
-- `TEST_SET`: 테스트 맵 경로
-- `NUM_META_AGENT`: 메타 에이전트 수
-- `NUM_TEST`: 테스트 반복 횟수
+## 📊 실험 결과
 
-## 보고서
-[프로젝트 PPT](docs/강화학습개론_RL_project_7조_Explorer.pptx)
+### 🏆 성능 비교
+<div align="center">
+  <img src="docs/experiments_10maps.png" width="800"/>
+</div>
+
+### ✅ 주요 결과
+- 🎯 Zero Communication 대비 **51.9% trajectory length 감소**
+- 🔥 Perfect Communication 대비 성능 격차의 **79.7% 회복**
+- 💡 **통신 없이** FoV 내 궤적 관찰만으로도 협력 탐사의 대부분을 달성
+
+---
+
+## 📄 참고 자료
+📎 [프로젝트 발표자료](docs/강화학습개론_RL_project_7조_Explorer.pptx)
